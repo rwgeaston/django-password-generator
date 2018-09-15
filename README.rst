@@ -14,6 +14,8 @@ Setup
         'password_generator',
     ]
 
+you also need rest_framework and django_filters in your INSTALLED_APPS
+
 2. Include the password-generator URLconf in your project urls.py like this::
 
     path('', include('password_generator.urls')),
@@ -24,17 +26,13 @@ Setup
 
 Payload should be:
 
-```json
-
-{
-    "wordset": "English",
-
-    "text": "The quick brown fox jumps over the lazy cow"
-}
-```
+{"wordset": "English", "text": "The quick brown fox jumps over the lazy cow"}
 
 Only words between lengths 4 and 10 will be kept (or configure in settings with MAX_WORD_LENGTH AND MIN_WORD_LENGTH).
+
+If you want a good sample of English language words, there is a useful link "big.txt" here https://norvig.com/spell-correct.html. It might break if you upload all of that at once (not tested). Alternatively provide your own word source.
 
 5. GET /passphrase/ endpoint to get some random words. If you have more than one wordset, specify with ?wordset=
 
 Can also use ?length= to choose the number of words in your passphrase.
+
