@@ -1,3 +1,4 @@
+import random
 from unittest.mock import ANY
 
 from django.test import TestCase
@@ -82,3 +83,54 @@ class PasswordGeneratorTest(TestCase):
 
         response = self.client.get('/words/?word=fantastic')
         self.assertFalse(response.json()['results'])
+
+    def test_generate_password(self):
+        words = 'word word another word this word can be used in a password exceptionally long word as well'
+        response = self.client.post(
+            '/words/bulk_add_words/',
+            data={
+                'wordset': 'english',
+                'text': words
+            }
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        random.seed(1)
+
+        response = self.client.get('/languages/english/generate_password/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.json(),
+            {'passphrase': 'another password well well', 'permutations_chosen_from': 2401},
+        )
+
+        # Only allow short words
+        response = self.client.get(
+            '/languages/english/generate_password/?min_word_length=2&max_word_length=4&length=3'
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.json(),
+            {'passphrase': 'this used this', 'permutations_chosen_from': 729},
+        )
+
+        # Only allow long words
+        response = self.client.get(
+            '/languages/english/generate_password/?min_word_length=8&max_word_length=15&length=2'
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.json(),
+            {'passphrase': 'exceptionally exceptionally', 'permutations_chosen_from': 4},
+        )
+
+        # Only allow very common words
+        response = self.client.get(
+            '/languages/english/generate_password/?words_allowed=2'
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.json(),
+            {'passphrase': 'another another word word', 'permutations_chosen_from': 16},
+        )

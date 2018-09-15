@@ -28,11 +28,13 @@ Payload should be:
 
 {"wordset": "English", "text": "The quick brown fox jumps over the lazy cow"}
 
-Only words between lengths 4 and 10 will be kept (or configure in settings with MAX_WORD_LENGTH AND MIN_WORD_LENGTH).
+If you want a good sample of English language words, there is a useful link "big.txt" here https://norvig.com/spell-correct.html. It might break if you upload all of that at once (not tested). Alternatively provide your own word source. "wordset" doesn't have to exist in advance.
 
-If you want a good sample of English language words, there is a useful link "big.txt" here https://norvig.com/spell-correct.html. It might break if you upload all of that at once (not tested). Alternatively provide your own word source.
+5. GET /wordset/WORDSET/generate_password/ endpoint to get some random words. WORDSET should be a wordset
 
-5. GET /passphrase/ endpoint to get some random words. If you have more than one wordset, specify with ?wordset=
+allowed query params:
 
-Can also use ?length= to choose the number of words in your passphrase.
-
+- length to choose the number of words in your passphrase.
+- words_allowed to say how infrequent words are allowed. By default, 2000 most common words are allowed. words_allowed=10000 will choose from much bigger dictionary.
+- min_word_length lets you control the length of words used. default minimum word length is 4.
+- max_word_length is similar (default 10)
