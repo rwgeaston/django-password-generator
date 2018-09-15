@@ -4,7 +4,8 @@ ABSOLUTE_MAX_WORD_LENGTH = 15  # Never bother keeping really long words
 
 
 class Wordset(models.Model):
-    name = models.CharField(max_length=30, unique=True)  # probably a language so we can generate passwords in different ones
+    # probably a language so we can generate passwords in different ones
+    name = models.CharField(max_length=30, unique=True)
 
 
 class Word(models.Model):
