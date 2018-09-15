@@ -2,6 +2,7 @@ from random import randint
 from collections import Counter
 
 from django.http import JsonResponse
+from django.db.transaction import atomic
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.decorators import action
@@ -26,9 +27,8 @@ class WordViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
         'word',
     )
 
-    @staticmethod
     @action(methods=['post'], detail=False)
-    def bulk_add_words(request):
+    def bulk_add_words(self, request):
         for param in ('wordset', 'text'):
             if param not in request.data:
                 return JsonResponse({'error': f'Must provide {param}'}, status=status.HTTP_400_BAD_REQUEST)
@@ -46,12 +46,25 @@ class WordViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
             if word and len(word) <= ABSOLUTE_MAX_WORD_LENGTH:
                 new_word_counts[word] += 1
 
+        words_already_updated = {}
+
         for word, count in new_word_counts.items():
-            word_object = Word.objects.get_or_create(word=word, wordset=wordset, word_length=len(word))[0]
+            word_object = words_already_updated.get(word)
+            if not word_object:
+                word_object = Word.objects.get_or_create(word=word, wordset=wordset, word_length=len(word))[0]
+                words_already_updated[word] = word_object
+
             word_object.count += count
-            word_object.save()
+
+        self.save_all(words_already_updated.values())
 
         return JsonResponse({'added': new_word_counts}, status=status.HTTP_201_CREATED)
+
+    @staticmethod
+    @atomic
+    def save_all(entities):
+        for entity in entities:
+            entity.save()
 
 
 class WordsetViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
