@@ -1,0 +1,8 @@
+.idea/
+app/db.sqlite3
+*.pyc
+*__pycache__*
+*local_settings.py
+app/gunicorn*.log
+*/static/*
+dist/
