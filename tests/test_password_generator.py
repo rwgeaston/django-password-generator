@@ -40,7 +40,10 @@ class PasswordGeneratorTest(TestCase):
                 'next': None,
                 'previous': None,
                 'results': [
-                    {'count': 1, 'id': ANY, 'word': sanitise(word), 'wordset': 'english'}
+                    {
+                        'count': 1, 'id': ANY, 'word': sanitise(word),
+                        'wordset': 'english', 'word_length': len(sanitise(word))
+                    }
                     for word in first_phrase.split()
                 ],
             },
@@ -68,13 +71,13 @@ class PasswordGeneratorTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
             response.json()['results'][0],
-            {'id': ANY, 'wordset': 'english', 'word': 'the', 'count': 3}
+            {'id': ANY, 'wordset': 'english', 'word': 'the', 'count': 3, 'word_length': 3}
         )
 
         response = self.client.get('/words/?word=brown')
         self.assertEqual(
             response.json()['results'][0],
-            {'id': ANY, 'wordset': 'english', 'word': 'brown', 'count': 1}
+            {'id': ANY, 'wordset': 'english', 'word': 'brown', 'count': 1, 'word_length': 5}
         )
 
         response = self.client.get('/words/?word=fantastic')

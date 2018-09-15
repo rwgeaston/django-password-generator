@@ -48,7 +48,7 @@ class WordViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
                 new_word_counts[word] += 1
 
         for word, count in new_word_counts.items():
-            word_object = Word.objects.get_or_create(word=word, wordset=wordset)[0]
+            word_object = Word.objects.get_or_create(word=word, wordset=wordset, word_length=len(word))[0]
             word_object.count += count
             word_object.save()
 
