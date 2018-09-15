@@ -33,7 +33,7 @@ Payload should be:
 
 If you want a good sample of English language words, there is a useful link "big.txt" here https://norvig.com/spell-correct.html. It might break if you upload all of that at once (not tested). Alternatively provide your own word source. "wordset" doesn't have to exist in advance.
 
-6. GET /wordset/WORDSET/generate_password/ endpoint to get some random words. WORDSET should be a wordset
+6. GET /wordset/WORDSET/generate_password/ endpoint to get some random words. WORDSET should be a Wordset which is already created and populated.
 
 allowed query params:
 
