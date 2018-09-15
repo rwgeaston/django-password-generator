@@ -12,10 +12,7 @@ from .models import Wordset
 from .models import ABSOLUTE_MAX_WORD_LENGTH
 from .serializers import WordSerializer
 from .serializers import WordsetSerializer
-
-
-def sanitise(word):
-    return word.lower()
+from .input_sanitise import sanitise
 
 
 class WordViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
@@ -46,7 +43,7 @@ class WordViewSet(viewsets.ModelViewSet):  # pylint: disable=too-many-ancestors
 
         for word in new_words:
             word = sanitise(word)
-            if len(word) <= ABSOLUTE_MAX_WORD_LENGTH:
+            if word and len(word) <= ABSOLUTE_MAX_WORD_LENGTH:
                 new_word_counts[word] += 1
 
         for word, count in new_word_counts.items():

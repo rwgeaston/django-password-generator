@@ -6,8 +6,11 @@ Upload some text which will be used to determine word frequencies in your prefer
 
 Setup
 -----------
+1. pip install git+git://github.com/rwgeaston/django-password-generator
 
-1. Add "password_generator" to your INSTALLED_APPS setting like this::
+you also need rest_framework, django-filters and unidecode (WIP how do I make these dependencies?)
+
+2. Add "password_generator" to your INSTALLED_APPS setting like this::
 
     INSTALLED_APPS = [
         ...
@@ -16,13 +19,13 @@ Setup
 
 you also need rest_framework and django_filters in your INSTALLED_APPS
 
-2. Include the password-generator URLconf in your project urls.py like this::
+3. Include the password-generator URLconf in your project urls.py like this::
 
     path('', include('password_generator.urls')),
 
-3. Run `python manage.py migrate` to create the password generator models.
+4. Run `python manage.py migrate` to create the password generator models.
 
-4. Start/Restart the server and POST texts to /words/bulk_add_words/ endpoint. The posted text will be split on spaces and used to determine word frequency. Words which are too short or too long will be ignored.
+5. Start/Restart the server and POST texts to /words/bulk_add_words/ endpoint. The posted text will be split on spaces and used to determine word frequency. Words which are too short or too long will be ignored.
 
 Payload should be:
 
@@ -30,7 +33,7 @@ Payload should be:
 
 If you want a good sample of English language words, there is a useful link "big.txt" here https://norvig.com/spell-correct.html. It might break if you upload all of that at once (not tested). Alternatively provide your own word source. "wordset" doesn't have to exist in advance.
 
-5. GET /wordset/WORDSET/generate_password/ endpoint to get some random words. WORDSET should be a wordset
+6. GET /wordset/WORDSET/generate_password/ endpoint to get some random words. WORDSET should be a wordset
 
 allowed query params:
 

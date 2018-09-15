@@ -6,7 +6,10 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from password_generator.views import sanitise
+from password_generator.input_sanitise import sanitise
+
+from .test_password_generator_data import big_input
+from .test_password_generator_data import big_output
 
 
 class PasswordGeneratorTest(TestCase):
@@ -134,3 +137,15 @@ class PasswordGeneratorTest(TestCase):
             response.json(),
             {'passphrase': 'another another word word', 'permutations_chosen_from': 16},
         )
+
+    def test_big_dirty_input(self):
+        response = self.client.post(
+            '/words/bulk_add_words/',
+            data={
+                'wordset': 'english',
+                'text': big_input
+            }
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.json(), {'added': big_output})
